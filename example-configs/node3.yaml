@@ -1,0 +1,9 @@
+port: 1053
+interval: 2
+count: 5
+timeout: 2
+targets:
+  - 127.0.0.1:1051
+  - 127.0.0.1:1052
+  - 127.0.0.1:1054
+unit: us
