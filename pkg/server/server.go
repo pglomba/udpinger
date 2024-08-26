@@ -36,16 +36,8 @@ func (s *Server) Start() error {
 		buffer := make([]byte, s.bufferSize)
 		_, clientAddress, err := conn.ReadFromUDP(buffer)
 		if err != nil {
-			slog.Error(err.Error())
+			slog.Debug(err.Error())
 		}
-
-		go responseHandler(conn, clientAddress, buffer)
-	}
-}
-
-func responseHandler(conn net.PacketConn, address net.Addr, payload []byte) {
-	_, err := conn.WriteTo(payload, address)
-	if err != nil {
-		slog.Error(err.Error())
+		_, _, err = conn.WriteMsgUDP(buffer, nil, clientAddress)
 	}
 }

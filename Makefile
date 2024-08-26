@@ -62,3 +62,15 @@ build:
 .PHONY: run
 run: build
 	./${BINARY_NAME} --config=$(cfg)
+
+## docker-up: start docker-compose project
+.PHONY: docker-up
+docker-up: build
+	docker-compose up -d --build
+
+## docker-down: stop docker-compose project
+.PHONY: docker-down
+docker-down:
+	docker-compose down
+
+

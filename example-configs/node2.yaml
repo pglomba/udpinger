@@ -1,9 +1,10 @@
-port: 1052
-interval: 2
-count: 3
+listen: 0.0.0.0:1052
+interval: 3
+count: 6
 timeout: 2
 targets:
-  - 127.0.0.1:1051
-  - 127.0.0.1:1053
-  - 127.0.0.1:1054
+  - node1:1051
+  - node3:1053
 unit: us
+exporter_type: prometheus
+prometheus_address: 0.0.0.0:2052

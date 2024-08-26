@@ -14,6 +14,7 @@ import (
 )
 
 type Client struct {
+	remoteName    string
 	remoteAddress *net.UDPAddr
 }
 
@@ -24,6 +25,7 @@ func NewClient(address string) (*Client, error) {
 	}
 
 	return &Client{
+		remoteName:    address,
 		remoteAddress: udpAddr,
 	}, nil
 }
@@ -50,7 +52,6 @@ type RTTCheckResult struct {
 	PacketLoss float64
 	Sent       atomic.Uint64
 	Received   atomic.Uint64
-	Timestamp  time.Time
 }
 
 type ConvertedRTTCheckResult struct {
@@ -62,7 +63,6 @@ type ConvertedRTTCheckResult struct {
 	PacketLoss float64
 	Sent       uint64
 	Received   uint64
-	Timestamp  time.Time
 }
 
 func (c *Client) RTTCheck(timeout int) (time.Duration, error) {
@@ -126,14 +126,13 @@ func (c *Client) StartMonitor(interval int, count int, timeout int, resultsCh ch
 			wg             sync.WaitGroup
 		)
 
-		rttCheckResult.Timestamp = time.Now().UTC()
-		rttCheckResult.Target = c.remoteAddress.String()
+		rttCheckResult.Target = c.remoteName
 		for i := 0; i < count; i++ {
 			wg.Add(1)
 			go func() {
 				err := c.RunRTTCheck(timeout, &wg, &rttCheckResult)
 				if err != nil {
-					slog.Error(err.Error())
+					slog.Debug(err.Error())
 				}
 			}()
 		}
@@ -143,7 +142,6 @@ func (c *Client) StartMonitor(interval int, count int, timeout int, resultsCh ch
 		convertedResult.Target = rttCheckResult.Target
 		convertedResult.Sent = rttCheckResult.Sent.Load()
 		convertedResult.Received = rttCheckResult.Received.Load()
-		convertedResult.Timestamp = rttCheckResult.Timestamp
 		for _, result := range rttCheckResult.Results {
 			convertedResult.Results = append(convertedResult.Results, convertTimeUnit(result, timeUnit))
 		}
