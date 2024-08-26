@@ -1,4 +1,4 @@
-<h1 style="text-align: center">
+<h1 align="center">
   <br>
   UDPinger
   <br>
@@ -6,7 +6,7 @@
 
 <h4 align="center">Simple ping based on UDP</h4>
 
-<p style="text-align: center">
+<p align="center">
 	<a href="https://github.com/pglomba/udpinger/actions/workflows/ci.yaml"><img src="https://github.com/pglomba/udpinger/actions/workflows/ci.yaml/badge.svg"></a>
 </p>
 
