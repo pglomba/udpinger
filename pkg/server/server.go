@@ -36,7 +36,7 @@ func (s *Server) Start() error {
 		buffer := make([]byte, s.bufferSize)
 		_, clientAddress, err := conn.ReadFromUDP(buffer)
 		if err != nil {
-			slog.Debug(err.Error())
+			slog.Debug("server error: " + err.Error())
 		}
 		_, _, err = conn.WriteMsgUDP(buffer, nil, clientAddress)
 	}
