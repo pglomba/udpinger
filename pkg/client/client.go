@@ -68,7 +68,7 @@ type ConvertedRTTCheckResult struct {
 func (c *Client) RTTCheck(timeout int) (time.Duration, error) {
 	conn, err := net.DialUDP("udp", nil, c.remoteAddress)
 	if err != nil {
-		return time.Duration(0), errors.New("error connecting to server: " + err.Error())
+		return time.Duration(0), errors.New("client error connecting to server: " + err.Error())
 	}
 
 	defer conn.Close()
@@ -79,25 +79,25 @@ func (c *Client) RTTCheck(timeout int) (time.Duration, error) {
 	encodedMessage, _ := json.Marshal(newMessage)
 	_, err = conn.Write(encodedMessage)
 	if err != nil {
-		return time.Duration(0), errors.New("error sending message: " + err.Error())
+		return time.Duration(0), errors.New("client error sending message: " + err.Error())
 	}
 
 	rcvBuffer := make([]byte, len(encodedMessage))
 	_, err = conn.Read(rcvBuffer)
 	if err != nil {
-		return time.Duration(0), errors.New("error reading message: " + err.Error())
+		return time.Duration(0), errors.New("client error reading message: " + err.Error())
 	}
 
 	var rcvMessage Message
 	err = json.Unmarshal(rcvBuffer, &rcvMessage)
 	if err != nil {
-		return time.Duration(0), errors.New("error parsing message: " + err.Error())
+		return time.Duration(0), errors.New("client error parsing message: " + err.Error())
 	}
 
 	if newMessage.Id == rcvMessage.Id {
 		return time.Since(rcvMessage.Timestamp), nil
 	} else {
-		return time.Duration(0), errors.New("response id mismatch")
+		return time.Duration(0), errors.New("client error: response ID mismatch")
 	}
 }
 

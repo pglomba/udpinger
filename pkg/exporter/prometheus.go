@@ -45,7 +45,6 @@ func NewMetrics(reg prometheus.Registerer) *Metrics {
 
 func (e *PrometheusExporter) Run(resultsCh <-chan client.ConvertedRTTCheckResult) {
 	registry := prometheus.NewRegistry()
-	metrics := NewMetrics(registry)
 	promHandler := promhttp.HandlerFor(registry, promhttp.HandlerOpts{})
 
 	go func(handler http.Handler) {
@@ -55,6 +54,7 @@ func (e *PrometheusExporter) Run(resultsCh <-chan client.ConvertedRTTCheckResult
 
 	}(promHandler)
 
+	metrics := NewMetrics(registry)
 	for {
 		rttResult := <-resultsCh
 		metrics.avgRtt.WithLabelValues(rttResult.Target).Set(float64(rttResult.Avg))
